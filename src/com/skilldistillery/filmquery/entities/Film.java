@@ -17,18 +17,16 @@ public class Film {
 	private String rating;
 	private String features;
 	private List<Actor> actors;
+	private String genre;
+	private Object copiesInInventory;
 
 	public Film() {
 
 	};
 
-	public Film(int filmId, String title, String desc, short releaseYear, int langId, int rentDur, double rate,
-			int length, double repCost, String rating, String features) {
-		this(filmId, title, desc, releaseYear, langId, rentDur, rate, length, repCost, rating, features, null);
-	}
 
 	public Film(int filmId, String title, String desc, short releaseYear, int langId, int rentDur, double rate,
-			int length, double repCost, String rating, String features, List<Actor> actors) {
+			int length, double repCost, String rating, String features, List<Actor> actors, String genre, int copies) {
 		super();
 		this.filmId = filmId;
 		this.title = title;
@@ -42,6 +40,8 @@ public class Film {
 		this.rating = rating;
 		this.features = features;
 		this.actors = actors;
+		this.genre = genre;
+		this.copiesInInventory = copies;
 	}
 
 	public int getFilmId() {
@@ -189,6 +189,10 @@ public class Film {
 		builder.append(rating);
 		builder.append(", features=");
 		builder.append(features);
+		builder.append(", genre=");
+		builder.append(genre);
+		builder.append(", copiesInInventory=");
+		builder.append(copiesInInventory);
 		builder.append(", actors=");
 		builder.append(actors);
 		builder.append("]");

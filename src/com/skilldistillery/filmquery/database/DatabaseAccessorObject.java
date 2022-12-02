@@ -16,7 +16,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 	private static final String url = "jdbc:mysql://localhost:3306/sdvid?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=US/Mountain";
 	private static final String user = "student";
-	String pass = "student";
+	private static final String pass = "student";
 
 	@Override
 	public Actor findActorById(int actorId) {
@@ -67,9 +67,13 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				double repCost = rs.getDouble("replacement_cost");
 				String rating = rs.getString("rating");
 				String features = rs.getString("special_features");
+				List<Actor> actors = findActorsByFilmId(filmId);
+				String genre = findFilmGenreByFilmId(filmId);
+				int copies = findNumFilmCopiesInInventory(filmId);
 				Film film = new Film(filmId, title, desc, releaseYear, langId, rentDur, rate, length, repCost, rating,
-						features);
+						features, actors, genre, copies);
 				films.add(film);
+				
 			}
 			rs.close();
 			stmt.close();
@@ -101,8 +105,10 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				String rating = rs.getString("rating");
 				String features = rs.getString("special_features");
 				List<Actor> actors = findActorsByFilmId(filmId);
+				String genre = findFilmGenreByFilmId(filmId);
+				int copies = findNumFilmCopiesInInventory(filmId);
 				film = new Film(filmId, title, desc, releaseYear, langId, rentDur, rate, length, repCost, rating,
-						features, actors);
+						features, actors, genre, copies);
 				String language = rs.getString("name");
 				film.setLanguage(language);
 			} else {
@@ -139,8 +145,10 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				String rating = rs.getString("rating");
 				String features = rs.getString("special_features");
 				List<Actor> actors = findActorsByFilmId(filmId);
+				String genre = findFilmGenreByFilmId(filmId);
+				int copies = findNumFilmCopiesInInventory(filmId);
 				film = new Film(filmId, title, desc, releaseYear, langId, rentDur, rate, length, repCost, rating,
-						features, actors);
+						features, actors, genre, copies);
 				films.add(film);
 			} 
 			if (films.isEmpty()){
@@ -155,6 +163,28 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		return films;
 	}
 
+	private int findNumFilmCopiesInInventory(int filmId) {
+		int copies = 0;
+		try {
+			Connection conn = DriverManager.getConnection(url, user,pass);
+			String sql = "SELECT COUNT(inventory_item.film_id) "
+					+ "FROM inventory_item JOIN film "
+					+ "ON film.id = inventory_item.film_id "
+					+ "WHERE film.id = ? "
+					+ "GROUP BY inventory_item.film_id";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, filmId);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				copies = rs.getInt("COUNT(inventory_item.film_id)");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return copies;
+	}
+
 	@Override
 	public List<Actor> findActorsByFilmId(int filmId) {
 		List<Actor> actors = new ArrayList<>();
@@ -165,13 +195,14 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, filmId);
 			ResultSet actorResult = stmt.executeQuery();
-			if (actorResult.next()) {
+			while (actorResult.next()) {
 				actor = new Actor();
 				actor.setId(actorResult.getInt("id"));
 				actor.setFirstName(actorResult.getString("first_name"));
 				actor.setLastName(actorResult.getString("last_name"));
 				actors.add(actor);
-			} else {
+			} 
+			if (actors.isEmpty()){
 				System.out.println("No such actor found");
 			}
 			stmt.close();
@@ -181,6 +212,28 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			e.printStackTrace();
 		}
 		return actors;
+	}
+
+	public String findFilmGenreByFilmId(int filmId) {
+		String genre = "unknown";
+		try {
+			Connection conn = DriverManager.getConnection(url, user,pass);
+			String sql = "SELECT category.name "
+					+ "FROM category JOIN film_category "
+					+ "ON category.id = film_category.category_id "
+					+ "JOIN film ON film_category.film_id = film.id "
+					+ "WHERE film.id = ?;";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, filmId);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				genre = rs.getString("name");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return genre;
 	}
 
 }
