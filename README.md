@@ -2,9 +2,10 @@
 
 
 ## Description:
-This program follows several programming frameworks including but not limited to Data Access Object (DAO) pattern and Object Relational Mapping (ORM). This Project utilizes JDBC and Maven to connect to a database that contains several tables. The Program accesses the database using a DAO and following ORM, puts the data retrieved into their respective object either actor or film. The program will loop giving the user several options of dynamic SQL statements based on user input. All of which are listed below. One thing I am particularly happy with in this project is the ability to handle many exceptions.
+This program follows several programming frameworks including but not limited to Data Access Object (DAO) pattern and Object Relational Mapping (ORM). This Project utilizes JDBC and Maven to connect to a database that contains several tables. The Program accesses the database using a DAO and following ORM, puts the data retrieved into their respective object either actor or film. The program will loop giving the user several options of dynamic SQL statements based on user input. All of which are listed below. One thing I am particularly happy with in this project is how robust the application is. There are several use cases in which a poor input from a user will be handled as well as bad data received from the DB.
+The biggest weakness for this program is that if the DataBase were to grow larger than 2147483647 rows the application would not be able to reach id's past 2147483647. This is because for the sake of speed and memory efficiency although it may be nominal, we choose to use int primitives for method inputs. This could be resolved by refactoring the code to use long for method inputs instead and parse user inputs with the Long.parseLong static method but this would decrease program efficiency overall. 
 
-- A diagram of the database is linked below.
+- A diagram of the database is linked below, and zip file of DB is within the project.
 
 
 ## Tech Used:
