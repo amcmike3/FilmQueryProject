@@ -2,7 +2,9 @@
 
 
 ## Description:
-This program follows several programming frameworks including but not limited to Data Access Object (DAO) pattern and Object Relational Mapping (ORM). This Project utilizes JDBC and Maven to connect to a database that contains several tables. The Program accesses the database using a DAO and following ORM, puts the data retrieved into their respective object either actor or film. The program will loop giving the user several options of dynamic SQL statements based on user input. All of which are listed below. 
+This program follows several programming frameworks including but not limited to Data Access Object (DAO) pattern and Object Relational Mapping (ORM). This Project utilizes JDBC and Maven to connect to a database that contains several tables. The Program accesses the database using a DAO and following ORM, puts the data retrieved into their respective object either actor or film. The program will loop giving the user several options of dynamic SQL statements based on user input. All of which are listed below. One thing I am particularly happy with in this project is the ability to handle many exceptions.
+
+- A diagram of the database is linked below.
 
 
 ## Tech Used:
@@ -51,4 +53,8 @@ Will find the language a film is in based on film by id.
 - Object Relational Mapping, Data Access Object framework
 - Using Statement objects as opposed to PreparedStatements will make the program vulnerable to SQL Injection attacks. This is because Statement allows string concatenation where PreparedStatments do not. 
 - Although not used in this project several MySQL functions were researched and discovered.
--Utilizing Connection, PreparedStatement, ResultSet Objects.
+- Utilizing Connection, PreparedStatement, ResultSet Objects.
+
+## DataBase Diagram:
+
+<img src="ERDiagram.png">
