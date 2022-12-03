@@ -89,8 +89,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		Film film = null;
 		try {
 			Connection conn = DriverManager.getConnection(url, user, pass);
-			String sql = "SELECT *" + " FROM film "
-					+ " JOIN language ON language.id = film.language_id WHERE film.id = ?";
+			String sql = "SELECT *" + " FROM film WHERE film.id = ?";
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, filmId);
 			ResultSet rs = stmt.executeQuery();
@@ -166,24 +165,6 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		return films;
 	}
 
-	private int findNumFilmCopiesInInventory(int filmId) {
-		int copies = 0;
-		try {
-			Connection conn = DriverManager.getConnection(url, user, pass);
-			String sql = "SELECT COUNT(inventory_item.film_id) " + "FROM inventory_item JOIN film "
-					+ "ON film.id = inventory_item.film_id " + "WHERE film.id = ? " + "GROUP BY inventory_item.film_id";
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setInt(1, filmId);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				copies = rs.getInt("COUNT(inventory_item.film_id)");
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return copies;
-	}
 
 	@Override
 	public List<Actor> findActorsByFilmId(int filmId) {
@@ -214,6 +195,25 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		return actors;
 	}
 
+	private int findNumFilmCopiesInInventory(int filmId) {
+		int copies = 0;
+		try {
+			Connection conn = DriverManager.getConnection(url, user, pass);
+			String sql = "SELECT COUNT(inventory_item.film_id) FROM inventory_item WHERE film_id\n"
+					+ "= ? GROUP BY inventory_item.film_id";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, filmId);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				copies = rs.getInt("COUNT(inventory_item.film_id)");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return copies;
+	}
+	
 	public String findFilmGenreByFilmId(int filmId) {
 		String genre = "unknown";
 		try {
@@ -238,8 +238,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		String language = "";
 		try {
 			Connection conn = DriverManager.getConnection(url, user, pass);
-			String sql = "SELECT *" + " FROM film "
-					+ " JOIN language ON language.id = film.language_id WHERE film.id = ?";
+			String sql = "SELECT language.name FROM film JOIN language ON language.id = film.language_id WHERE film.id = ?";
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, filmId);
 			ResultSet rs = stmt.executeQuery();

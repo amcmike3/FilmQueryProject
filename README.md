@@ -1,17 +1,17 @@
 # FilmQueryProject
 
 
-# Description:
-This program follows several programming frameworks including but not limited to Data Access Object (DAO) pattern and Object Relational Mapping (ORM). This Project utilizes JDBC and Maven to connect to a database that contains several tables. The Program accesses the database using a DAO and following ORM, puts the data retrieved into their respective object either actor or film. The program will loop giving the user several options of dynamic SQL statements based on user input. 
+## Description:
+This program follows several programming frameworks including but not limited to Data Access Object (DAO) pattern and Object Relational Mapping (ORM). This Project utilizes JDBC and Maven to connect to a database that contains several tables. The Program accesses the database using a DAO and following ORM, puts the data retrieved into their respective object either actor or film. The program will loop giving the user several options of dynamic SQL statements based on user input. All of which are listed below. 
 
 
-# Tech Used:
+## Tech Used:
 - Maven
 - Java
 - JDBC
-- Object Relational 
+- MySQL
 
-# SQL Statements:
+## SQL Statements:
 - SELECT id, first_name, last_name FROM actor WHERE id = ?;
 <br/>
 Will retrieve actor information based on the actor id chosen by user.
@@ -20,11 +20,35 @@ Will retrieve actor information based on the actor id chosen by user.
 <br/>
 Will retrieve film information based on a actor id chosen by user.
 
-SELECT *" + " FROM film " + " JOIN language ON language.id = film.language_id WHERE film.id = ?
+- SELECT * FROM film WHERE film.id = ?;
 <br/>
-Will find film by id
+Will get all data from film table.
+
+- SELECT * FROM film WHERE title like %?% or description like %?%;
+<br/>
+Will get films matching the key word provided by user.
+
+- SELECT COUNT(inventory_item.film_id) FROM inventory_item WHERE film_id
+= ? GROUP BY inventory_item.film_id;
+<br/> 
+Will get the number of occurences of film id in the inventory table.
+
+- SELECT actor.id, actor.first_name, actor.last_name FROM actor join film_actor on actor.id = film_actor.actor_id WHERE film_id = ?;
+<br/>
+Will get all actors in a given film based on film id provided by user.
+
+- SELECT category.name FROM category JOIN film_category ON category.id = film_category.category_id JOIN film ON film_category.film_id = film.id WHERE film.id = ?;
+<br/>
+Will get the genre of a film based on film id provided by user.
 
 
-# Lessons Learned:
-- Object Relational Mapping
+- SELECT language.name FROM film JOIN language ON language.id = film.language_id WHERE film.id = ?
+<br/>
+Will find the language a film is in based on film by id.
+
+
+## Lessons Learned:
+- Object Relational Mapping, Data Access Object framework
 - Using Statement objects as opposed to PreparedStatements will make the program vulnerable to SQL Injection attacks. This is because Statement allows string concatenation where PreparedStatments do not. 
+- Although not used in this project several MySQL functions were researched and discovered.
+-Utilizing Connection, PreparedStatement, ResultSet Objects.
